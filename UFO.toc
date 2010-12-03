@@ -1,0 +1,10 @@
+## Interface: 40000
+## Title: UFO
+## Version: 0.0.1
+## Author: Silvann
+## Notes: UnitFramesOptions (UFO)
+## SavedVariablesPerCharacter: UFO_DB
+
+UFO_Localization.lua
+UFO.lua
+UFO.xml
