@@ -1,17 +1,8 @@
 local L = UFOLocalization;
 
 local UFO_Units = {"Player", "Target", "Pet", "Party",};
--- local UFO_Table = {}
-
-function UFO_test()
-	for i, unit in ipairs(UFO_Units) do
-		print(i .. " " .. unit)
-	end
-end
 
 function UFO_OnLoad(self)
-
-	-- UIPanelWindows["UFO_Frame"] = {whileDead = 1, }
 
 	self:RegisterEvent("ADDON_LOADED");
 	self:SetBackdropBorderColor(.6, .6, .6, 1);
@@ -275,3 +266,64 @@ function UFO_UpdateTextString(textStatusBar, ...)
 	end
 end
 hooksecurefunc("TextStatusBar_UpdateTextString", UFO_UpdateTextString)
+
+-- Original Blizzard function
+--[[
+function TextStatusBar_UpdateTextString(textStatusBar)
+	local textString = textStatusBar.TextString;
+	if(textString) then
+		local value = textStatusBar:GetValue();
+		local valueMin, valueMax = textStatusBar:GetMinMaxValues();
+
+		if ( ( tonumber(valueMax) ~= valueMax or valueMax > 0 ) and not ( textStatusBar.pauseUpdates ) ) then
+			textStatusBar:Show();
+			if ( value and valueMax > 0 and ( GetCVarBool("statusTextPercentage") or textStatusBar.showPercentage ) and not textStatusBar.showNumeric) then
+				if ( value == 0 and textStatusBar.zeroText ) then
+					textString:SetText(textStatusBar.zeroText);
+					textStatusBar.isZero = 1;
+					textString:Show();
+					return;
+				end
+				value = tostring(math.ceil((value / valueMax) * 100)) .. "%";
+				if ( textStatusBar.prefix and (textStatusBar.alwaysPrefix or not (textStatusBar.cvar and GetCVar(textStatusBar.cvar) == "1" and textStatusBar.textLockable) ) ) then
+					textString:SetText(textStatusBar.prefix .. " " .. value);
+				else
+					textString:SetText(value);
+				end
+			elseif ( value == 0 and textStatusBar.zeroText ) then
+				textString:SetText(textStatusBar.zeroText);
+				textStatusBar.isZero = 1;
+				textString:Show();
+				return;
+			else
+				textStatusBar.isZero = nil;
+				if ( textStatusBar.capNumericDisplay ) then
+					value = TextStatusBar_CapDisplayOfNumericValue(value);
+					valueMax = TextStatusBar_CapDisplayOfNumericValue(valueMax);
+				end
+				if ( textStatusBar.prefix and (textStatusBar.alwaysPrefix or not (textStatusBar.cvar and GetCVar(textStatusBar.cvar) == "1" and textStatusBar.textLockable) ) ) then
+					textString:SetText(textStatusBar.prefix.." "..value.." / "..valueMax);
+				else
+					textString:SetText(value.." / "..valueMax);
+				end
+			end
+			
+			if ( (textStatusBar.cvar and GetCVar(textStatusBar.cvar) == "1" and textStatusBar.textLockable) or textStatusBar.forceShow ) then
+				textString:Show();
+			elseif ( textStatusBar.lockShow > 0 and (not textStatusBar.forceHideText) ) then
+				textString:Show();
+			else
+				textString:Hide();
+			end
+		else
+			textString:Hide();
+			textString:SetText("");
+			if ( not textStatusBar.alwaysShow ) then
+				textStatusBar:Hide();
+			else
+				textStatusBar:SetValue(0);
+			end
+		end
+	end
+end
+]]--
